@@ -183,7 +183,7 @@ class ScrollableTabBar extends React.PureComponent<ScrollableTabBarProps, State>
           showsHorizontalScrollIndicator={false}>
           {tabs.map((tab, page) => {
             const isTabActive = activeTab === page;
-            const tabKey = tab.title || `tab ${page}`;
+           const tabKey = tab.categoryId.name || `tab ${page}`;
 
             return (
               <TouchableOpacity
@@ -204,22 +204,22 @@ class ScrollableTabBar extends React.PureComponent<ScrollableTabBarProps, State>
                     isTabActive && tabTextContainerActiveStyle,
                   ]}>
                   {this.renderIcon(tab.icon, page)}
-                  {tab.title && (
+                  {tab.categoryId.name && (
                     <Text
+                      // eslint-disable-next-line no-return-assign
                       onLayout={({
                         nativeEvent: {
                           layout: { width },
                         },
                       }) => {
                         const newWidth = [...tabUnderlineWidth];
-
                         newWidth[page] = width;
                         this.setState({
                           tabUnderlineWidth: newWidth,
                         });
                       }}
                       style={[styles.tabText, tabTextStyle, isTabActive && tabTextActiveStyle]}>
-                      {tab.title}
+                      {tab.categoryId.name}
                     </Text>
                   )}
                 </View>
