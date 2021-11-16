@@ -1,4 +1,4 @@
-import React, { Component, MutableRefObject, ReactNode } from 'react';
+import React, { Component, MutableRefObject, ReactNode,useEffect } from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -14,6 +14,9 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   StyleProp,
+  TouchableOpacity,
+  Text,
+  Image
 } from 'react-native';
 import { ScrollableTabBar, ScrollableTabView, HeaderBackgroundImage } from './components';
 import { colors, constants } from './constants';
@@ -509,14 +512,28 @@ class StickyParallaxHeaderComponent extends Component<StickyParallaxHeaderProps,
             keyboardShouldPersistTaps={keyboardShouldPersistTaps}>
             {!tabs && children}
             {tabs &&
-              tabs.map((item) => (
+              tabs.map((i) => (
                 <View
-                  accessibilityLabel={item.title}
-                  key={item.title}
+                  tabLabel={i.categoryId.name}
+                  key={i.categoryId._id}
+                  onLayout={this.setContentHeight}
                   ref={(c) => {
                     this.tab = c;
                   }}>
-                  {item.content}
+                  {i.foods.map(item => (
+                    // <View></View>
+                    <FullWidthFoodDetails 
+                    image={item.image.length > 0 ? item.image[0] : null}
+                    label={item.name}
+                    ratings={item.ratings}
+                    price={item.price}
+                    deliveryFee={item.deliveryFee}
+                    desc={item.desc}
+                    // handleOnAddItem={() => {
+                    //   handleOnAddItem({ ...item, image: item.image[0] });
+                    // }}
+                    />
+                  ))}
                 </View>
               ))}
           </ScrollableTabView>
@@ -555,3 +572,149 @@ class StickyParallaxHeaderComponent extends Component<StickyParallaxHeaderProps,
 }
 
 export default StickyParallaxHeaderComponent;
+
+const FullWidthFoodDetails = ({
+  image,
+  label,
+  price,
+  onPressFoodItem,
+  desc,
+  _id,
+  handleOnAddItem,
+}) => {
+ 
+  
+  const [quantity, setQuantity] = useState(null);
+  const onAddToCart = () => {
+    setQuantity("1");
+    handleOnAddItem();
+  };
+  return (
+    <View style={foodContainerStyles.rootContainer}>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+        }}>
+        {image ? (
+          <Image
+            style={foodContainerStyles.image}
+            source={{
+              uri: image,
+            }}
+          />
+        ) : (
+          <Image source={Images.logo} style={foodContainerStyles.image} />
+        )}
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            backgroundColor: "white",
+            padding: 10,
+          }}
+          onPress={onPressFoodItem}
+          activeOpacity={0.7}>
+          <Text numberOfLines={2} style={foodContainerStyles.title}>
+            {label}
+          </Text>
+          <View
+            style={{
+              // borderWidth: 1,
+              flex: 1,
+              justifyContent: "center",
+            }}>
+            <View style={{ justifyContent: "space-between" }}>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: "#8A8A8A",
+                  fontSize: 12,
+                  height: 35,
+                  paddingTop: 5,
+                }}>
+                {desc}
+              </Text>
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: "#3aa76d",
+                  fontSize: 15,
+                }}>
+                Rs {price}
+              </Text>
+           
+            </View>
+          </View>
+        </TouchableOpacity>
+        {/* <View style={foodContainerStyles.addToCartButtonContainer}>
+          <AddItemButton
+            style={{ width: 100 }}
+            handleOnAdd={onAddToCart}
+            showAddedToCartOnly={true}
+            qty={quantity}
+          />
+        </View> */}
+      </View>
+     
+    </View>
+  );
+};
+
+
+const foodContainerStyles = StyleSheet.create({
+  rootContainer: {
+    width: "99%",
+    height: 100,
+    borderRadius: 5,
+    padding: 8,
+    flexDirection: "row",
+    borderBottomWidth: 0.3,
+    borderBottomColor: '#8A8A8A',
+    alignSelf: "center",
+    paddingBottom: 5,
+  },
+
+  image: {
+    width: 75,
+    height: 85,
+    backgroundColor: "#3AA76D",
+    borderRadius: 8,
+    alignSelf: "center",
+    borderColor: "#979797",
+    borderWidth: 0.3,
+    marginLeft: 5,
+  },
+  detailContainer: {
+    flex: 1,
+  },
+  descContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 13,
+    color: "#28313b",
+  },
+  deliveryDetailContainer: {
+    alignItems: "center",
+  },
+  deliveryDetailStyle: {
+    fontWeight: "normal",
+  },
+  ratingContainer: {
+    height: 25,
+    width: 25,
+    backgroundColor: "#FFC043",
+    borderRadius: 12.5,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+  },
+  ratingStyle: {
+  },
+  addToCartButtonContainer: {
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    width: 100,
+  },
+});
