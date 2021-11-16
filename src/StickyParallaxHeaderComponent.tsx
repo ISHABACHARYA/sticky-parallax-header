@@ -1,4 +1,4 @@
-import React, { Component, MutableRefObject, ReactNode,useEffect } from 'react';
+import React, { Component, MutableRefObject, ReactNode,useEffect,useState } from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -16,7 +16,8 @@ import {
   StyleProp,
   TouchableOpacity,
   Text,
-  Image
+  Image,
+StyleSheet
 } from 'react-native';
 import { ScrollableTabBar, ScrollableTabView, HeaderBackgroundImage } from './components';
 import { colors, constants } from './constants';
